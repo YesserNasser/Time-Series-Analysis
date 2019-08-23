@@ -189,6 +189,9 @@ def predict_point_by_point(model,data):
     predicted = np.reshape(predicted, (predicted.size,))
     return predicted
 # ======================= predict multiple sequences ==========================
+# Note: the volume that goes into curr_frame in second loop is not exact (just an approximation)
+# using the exact volume does not make a difference. the exact volume is stored data[j+1][-1][1] 
+# (volume is the last element of the next sequences x_test, column 2). 
 def predict_sequences_multiple(model, data, window_size, prediction_len):
     print('[Model] predicting sequences multiple')
     prediction_seqs = []
