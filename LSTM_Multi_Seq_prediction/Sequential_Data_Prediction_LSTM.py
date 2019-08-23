@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Aug 20 15:06:10 2019
-
 @author: Yesser H. Nasser
 """
 
@@ -189,8 +188,8 @@ def predict_point_by_point(model,data):
     predicted = np.reshape(predicted, (predicted.size,))
     return predicted
 # ======================= predict multiple sequences ==========================
-# Note: the volume that goes into curr_frame in second loop is not exact (just an approximation)
-# using the exact volume does not make a difference. the exact volume is stored data[j+1][-1][1] 
+# Note: the volume that goes into curr_frame in the 2nd for loop is not exact (just an approximation)
+# using the exact volume does not make a difference in the results (for this section). the exact volume is stored at data[j+1][-1][1] 
 # (volume is the last element of the next sequences x_test, column 2). 
 def predict_sequences_multiple(model, data, window_size, prediction_len):
     print('[Model] predicting sequences multiple')
@@ -203,6 +202,24 @@ def predict_sequences_multiple(model, data, window_size, prediction_len):
             curr_frame = curr_frame[1:]
             curr_frame = np.insert(curr_frame, [window_size-2], predicted[-1], axis=0)
         prediction_seqs.append(predicted)
+    return prediction_seqs
+# ======================= predict multiple sequences ==========================
+# Note: this function uses the exact volume from the data to creat the sequence prediction.
+def predict_sequences_multiple_modified (model, data, window_size, prediction_len):
+    print('[Model] predicting sequences multiple')
+    prediction_seqs = []
+    for i in range(int(len(data)/prediction_len)):
+        curr_frame = data[i*prediction_len]
+        close_pred = []
+        close_volume = []
+        for j in range(prediction_len):
+            volume = data[j+1][-1][1]
+            close = model.predict(curr_frame[newaxis,:,:])[0,0]
+            close_volume.append([close, volume])
+            close_pred.append(close)
+            curr_frame = curr_frame[1:]
+            curr_frame = np.insert(curr_frame, [window_size-2], close_volume[-1], axis=0)
+        prediction_seqs.append(close_pred)
     return prediction_seqs
 # ===================== Prediction using test data ============================
 predictions_multi_sequences = predict_sequences_multiple(model, x_test, 
