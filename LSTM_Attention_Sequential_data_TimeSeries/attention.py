@@ -15,7 +15,6 @@ def dot_product(x, kernel):
         return K.squeeze(K.dot(x, K.expand_dims(kernel)), axis=-1)
     else:
         return K.dot(x, kernel)
-
 class Attention(Layer):
     def __init__(self,
                  W_regularizer=None, b_regularizer=None,
