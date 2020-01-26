@@ -12,7 +12,6 @@ import collections
 from torch.autograd import Variable
 
 from torch import optim
-
 from sklearn.preprocessing import StandardScaler
 from typing import Tuple
 
